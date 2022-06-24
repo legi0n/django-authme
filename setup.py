@@ -26,21 +26,12 @@ setup(
     long_description=readme,
     long_description_content_type='text/markdown',
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
-        'Natural Language :: English',
-        'Operating System :: OS Independent',
+        'Intended Audience :: Developers',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
         'Framework :: Django',
-        'Topic :: Internet :: WWW/HTTP',
-        'Topic :: Utilities',
         'Typing :: Typed',
+        'Topic :: Internet :: WWW/HTTP',
     ],
     keywords='django authentication login utilities',
     project_urls={
@@ -53,7 +44,10 @@ setup(
     ],
     extras_require={
         'dev': [],
-        'test': [],
+        'test': [
+            'factory_boy>=3.2.1',
+            'Faker>=13.14.0',
+        ],
     },
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests']),
 )

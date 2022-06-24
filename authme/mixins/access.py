@@ -18,8 +18,8 @@ __all__ = [
 
 
 class AccessMixin:
-    """ 
-    Base access mixin. All access mixins should inherit from this one
+    """
+    Base access mixin. All access mixins should inherit from this one.
     """
 
     login_url: Optional[str] = None
@@ -108,7 +108,7 @@ class AnonymousRequiredMixin(AccessMixin):
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if request.user.is_authenticated:
             return self.handle_no_permission()
-        return super().dispatch(request, *args, **kwargs) 
+        return super().dispatch(request, *args, **kwargs)
 
 
 class StaffUserRequiredMixin(AccessMixin):
@@ -116,7 +116,7 @@ class StaffUserRequiredMixin(AccessMixin):
     Requires the user to be authenticated and a staffuser.
     """
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_staff:
+        if not (request.user.is_staff or request.user.is_superuser):
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
 
@@ -146,7 +146,7 @@ class UserPassesTestMixin(AccessMixin):
         return self.test_func
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        user_test_result = self.get_test_func()()
+        user_test_result = self.get_test_func()(request.user)
         if not user_test_result:
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)

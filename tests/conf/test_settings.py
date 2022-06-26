@@ -1,6 +1,6 @@
-from django.test import TestCase
 from django.test.utils import override_settings
 from authme.conf.settings import app_settings
+from tests.cases import TestCase
 
 
 class TestAuthmeSettings(TestCase):

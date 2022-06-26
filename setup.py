@@ -29,6 +29,7 @@ setup(
         'Issue tracker': 'https://github.com/legi0n/django-authme/issues',
     },
     packages=find_packages(exclude=['tests', 'tests.*']),
+    include_package_data=True,
     python_requires='>=3.8',
     install_requires=[
         'django>=4.0'
@@ -41,6 +42,7 @@ setup(
         ],
     },
     classifiers=[
+        'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
         'Intended Audience :: Developers',
         'Programming Language :: Python',

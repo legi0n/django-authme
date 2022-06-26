@@ -14,18 +14,18 @@ DEFAULTS = {
 
     # Signup
     'SIGNUP_ALLOWED': True,
-    'SIGNUP_URL': '/signup',
+    'SIGNUP_AUTO_LOGIN': False,
+    'SIGNUP_URL': '/signup/',
     'SIGNUP_REDIRECT_URL': '/',
-    'SIGNUP_DISALLOWED_URL': '/',
-
+    'SIGNUP_DISALLOWED_URL': '/signup/closed',
 
     # Login
-    'LOGIN_URL': '/login',
+    'LOGIN_URL': '/login/',
     'LOGIN_REDIRECT_URL': '/',
 
 
     # Logout
-    'LOGOUT_URL': '/logout',
+    'LOGOUT_URL': '/logout/',
     'LOGOUT_REDIRECT_URL': '/',
 
 }

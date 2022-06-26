@@ -39,7 +39,9 @@ class AccessMixin:
         return str(login_url)
 
     def get_permission_denied_message(self) -> str:
-        permission_denied_message = self.permission_denied_message or app_settings.DEFAULT_PERMISSION_DENIED_MESSAGE
+        permission_denied_message = (
+            self.permission_denied_message or app_settings.DEFAULT_PERMISSION_DENIED_MESSAGE
+        )
         if not permission_denied_message:
             class_name = self.__class__.__name__
             raise ImproperlyConfigured(

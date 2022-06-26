@@ -19,12 +19,27 @@ with open('README.md') as f:
 setup(
     name=name,
     version=version,
-    author=author,
-    url='https://github.com/legi0n/django-authme',
-    license=license,
     description='Authentication utilities and systems for Django',
     long_description=readme,
     long_description_content_type='text/markdown',
+    author=author,
+    license=license,
+    project_urls={
+        'Source': 'https://github.com/legi0n/django-authme',
+        'Issue tracker': 'https://github.com/legi0n/django-authme/issues',
+    },
+    packages=find_packages(exclude=['tests', 'tests.*']),
+    python_requires='>=3.8',
+    install_requires=[
+        'django>=4.0'
+    ],
+    extras_require={
+        'dev': [],
+        'test': [
+            'factory_boy>=3.2.1',
+            'Faker>=13.14.0',
+        ],
+    },
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Intended Audience :: Developers',
@@ -34,20 +49,4 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
     ],
     keywords='django authentication login utilities',
-    project_urls={
-        'Source': 'https://github.com/legi0n/django-authme',
-        'Issue tracker': 'https://github.com/legi0n/django-authme/issues',
-    },
-    python_requires='>=3.8',
-    install_requires=[
-        'django>=3.2'
-    ],
-    extras_require={
-        'dev': [],
-        'test': [
-            'factory_boy>=3.2.1',
-            'Faker>=13.14.0',
-        ],
-    },
-    packages=find_packages(exclude=['tests']),
 )

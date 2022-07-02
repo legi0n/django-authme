@@ -1,12 +1,15 @@
 from typing import Optional, Callable, Any
 from urllib.parse import urlparse
 from django.shortcuts import resolve_url
-from django.http.request import HttpRequest
-from django.http.response import HttpResponse, HttpResponseRedirect
+from django.http.response import HttpResponseRedirect
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from authme.conf.settings import app_settings
+from authme._types import (
+    HttpRequestType,
+    HttpResponseType,
+)
 
 __all__ = [
     'LoginRequiredMixin',
@@ -39,13 +42,14 @@ class AccessMixin:
 
     def get_permission_denied_message(self) -> str:
         permission_denied_message = (
-            self.permission_denied_message or app_settings.DEFAULT_PERMISSION_DENIED_MESSAGE
+            self.permission_denied_message
+            or app_settings.DEFAULT_PERMISSION_DENIED_MESSAGE
         )
         if not permission_denied_message:
             class_name = self.__class__.__name__
             raise ImproperlyConfigured(
-                f'{class_name} is missing the permission_denied_message attribute. '
-                f'Define {class_name}.permission_denied_message, '
+                f'{class_name} is missing the permission_denied_message '
+                f'attribute. Define {class_name}.permission_denied_message, '
                 f'`PERMISSION_DENIED_MESSAGE` in settings.AUTHME, or override '
                 f'{class_name}.get_permission_denied_message().'
             )
@@ -54,7 +58,10 @@ class AccessMixin:
     def get_redirect_field_name(self) -> str:
         return self.redirect_field_name
 
-    def handle_no_permission(self, message: Optional[str] = None) -> HttpResponse:
+    def handle_no_permission(
+        self,
+        message: Optional[str] = None
+    ) -> HttpResponseType:
         if self.raise_exception or self.request.user.is_authenticated:
             message = message or self.get_permission_denied_message()
             raise PermissionDenied(message)
@@ -78,7 +85,12 @@ class LoginRequiredMixin(AccessMixin):
     """
     Requires the user to be authenticated.
     """
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def dispatch(
+        self,
+        request: HttpRequestType,
+        *args: Any,
+        **kwargs: Any
+    ) -> HttpResponseType:
         if not request.user.is_authenticated:
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
@@ -91,10 +103,16 @@ class AnonymousRequiredMixin(AccessMixin):
     authenticated_redirect_url: Optional[str] = None
 
     def get_authenticated_redirect_url(self) -> str:
-        authenticated_redirect_url = self.authenticated_redirect_url or app_settings.LOGIN_REDIRECT_URL
+        authenticated_redirect_url: str = (
+            self.authenticated_redirect_url
+            or app_settings.LOGIN_REDIRECT_URL
+        )
         return str(authenticated_redirect_url)
 
-    def handle_no_permission(self, message: Optional[str] = None) -> HttpResponse:
+    def handle_no_permission(
+        self,
+        message: Optional[str] = None
+    ) -> HttpResponseType:
         url = self.get_authenticated_redirect_url()
         if url == self.request.get_full_path():
             class_name = self.__class__.__name__
@@ -106,7 +124,12 @@ class AnonymousRequiredMixin(AccessMixin):
             )
         return HttpResponseRedirect(url)
 
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def dispatch(
+        self,
+        request: HttpRequestType,
+        *args: Any,
+        **kwargs: Any
+    ) -> HttpResponseType:
         if request.user.is_authenticated:
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
@@ -116,7 +139,12 @@ class StaffUserRequiredMixin(AccessMixin):
     """
     Requires the user to be authenticated and a staffuser.
     """
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def dispatch(
+        self,
+        request: HttpRequestType,
+        *args: Any,
+        **kwargs: Any
+    ) -> HttpResponseType:
         if not (request.user.is_staff or request.user.is_superuser):
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
@@ -126,7 +154,12 @@ class SuperUserRequiredMixin(AccessMixin):
     """
     Requires the user to be authenticated and a superuser.
     """
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def dispatch(
+        self,
+        request: HttpRequestType,
+        *args: Any,
+        **kwargs: Any
+    ) -> HttpResponseType:
         if not request.user.is_superuser:
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
@@ -146,7 +179,12 @@ class UserPassesTestMixin(AccessMixin):
     def get_test_func(self) -> Callable[..., Any]:
         return self.test_func
 
-    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def dispatch(
+        self,
+        request: HttpRequestType,
+        *args: Any,
+        **kwargs: Any
+    ) -> HttpResponseType:
         user_test_result = self.get_test_func()(request.user)
         if not user_test_result:
             return self.handle_no_permission()

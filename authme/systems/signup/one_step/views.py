@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, get_user_model, login
 from authme.conf.settings import app_settings
-from authme._types import Form
+from authme._types import FormType, UserType
 from authme.views import SignupView as BaseSignupView
 
 __all__ = [
@@ -8,15 +8,15 @@ __all__ = [
 ]
 
 
-User = get_user_model()
+UserModel = get_user_model()
 
 
 class SignupView(BaseSignupView):
-    def process(self, form: Form) -> User:
+    def process(self, form: FormType) -> UserType:
         user = form.save()
         user = authenticate(
             **{
-                User.USERNAME_FIELD: user.get_username(),
+                UserModel.USERNAME_FIELD: user.get_username(),
                 'password': form.cleaned_data['password1'],
             }
         )

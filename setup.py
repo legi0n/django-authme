@@ -35,10 +35,16 @@ setup(
         'django>=4.0'
     ],
     extras_require={
-        'dev': [],
+        'dev': [
+            'twine',
+            'wheel',
+            'flake8',
+            'mypy',
+
+        ],
         'test': [
-            'factory_boy>=3.2.1',
-            'Faker>=13.14.0',
+            'factory_boy',
+            'Faker',
         ],
     },
     classifiers=[

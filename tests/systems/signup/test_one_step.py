@@ -26,12 +26,14 @@ class TestSignupView(TestCase):
     
     def test_user_saved(self):
         data = valid_user_data.copy()
-        self.client.post('/signup/', data)
-        user = User.objects.get(username=data['username'])
-        self.assertTrue(user in User.objects.all())
+        test_login_data = {
+            User.USERNAME_FIELD: data['username'],
+            'password': data['password1']
+        }
 
-    def test_check_user_password(self):
-        data = valid_user_data.copy()
+        login = self.client.login(**test_login_data)
+        self.assertFalse(login)
+
         self.client.post('/signup/', data)
-        user = User.objects.get(username=data['username'])
-        self.assertTrue(user.check_password(data['password1']))
+        login = self.client.login(**test_login_data)
+        self.assertTrue(login)

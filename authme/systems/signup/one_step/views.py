@@ -21,6 +21,6 @@ class SignupView(BaseSignupView):
             }
         )
 
-        if app_settings.SIGNUP_AUTO_LOGIN:
+        if app_settings.POST_SIGNUP_LOGIN:
             login(self.request, user)
         return user

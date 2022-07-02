@@ -18,7 +18,7 @@ class TestLoginView(TestCase):
         )
 
     def test_valid_login(self):
-        response = self.client.post(
+        self.client.post(
             '/login/',
             {
                 'username': 'testuser',
@@ -28,7 +28,7 @@ class TestLoginView(TestCase):
         self.assertIn(SESSION_KEY, self.client.session)
 
     def test_invalid_login(self):
-        response = self.client.post(
+        self.client.post(
             '/login/',
             {
                 'username': 'testuser',
@@ -36,3 +36,18 @@ class TestLoginView(TestCase):
             }
         )
         self.assertNotIn(SESSION_KEY, self.client.session)
+
+    # @override_settings(
+    #     AUTHME={
+    #         'LOGIN_REDIRECT_AUTHENTICATED_USER': False
+    #     }
+    # )
+    # def test_redirect_authenticated_user(self):
+    #     self.client.post(
+    #         '/login/',
+    #         {
+    #             'username': 'testuser',
+    #             'password': 'password',
+    #         }
+    #     )
+    #     self.assertIn(SESSION_KEY, self.client.session)

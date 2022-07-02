@@ -21,7 +21,6 @@ class AccessMixin:
     """
     Base access mixin. All access mixins should inherit from this one.
     """
-
     login_url: Optional[str] = None
     permission_denied_message: Optional[str] = None
     raise_exception: bool = False

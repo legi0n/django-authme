@@ -1,22 +1,25 @@
-from typing import Any, Union, Optional
-from django.test import RequestFactory, TestCase
+from typing import Any, Optional, Union
+
+from django.contrib.auth.models import User
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
+from django.test import RequestFactory, TestCase
 from django.views.generic.base import View
-from django.contrib.auth.models import User
+
 from .factories import UserFactory
 
 __all__ = [
-    'HttpCodeTestCase',
-    'TestCase',
+    "HttpCodeTestCase",
+    "TestCase",
 ]
 
 
 class HttpCodeTestCase(TestCase):
     def assertHttpCode(self, response: str, code: int) -> None:
         self.assertEqual(
-            response.status_code, code,
-            f'Expected an HTTP {code}, but got HTTP {response.status_code}'
+            response.status_code,
+            code,
+            f"Expected an HTTP {code}, but got HTTP {response.status_code}",
         )
 
     def assertHttpOK(self, response: HttpResponse) -> None:
@@ -25,7 +28,7 @@ class HttpCodeTestCase(TestCase):
     def assertHttpRedirect(self, response: HttpResponse) -> None:
         self.assertTrue(
             300 <= response.status_code < 400,
-            f'Expected an HTTP 3XX, but got HTTP {response.status_code})'
+            f"Expected an HTTP 3XX, but got HTTP {response.status_code})",
         )
 
     def assertHttpUnauthorized(self, response: HttpResponse) -> None:
@@ -45,11 +48,11 @@ class TestCase(HttpCodeTestCase):
 
     def build_request(
         self,
-        path: Optional[str] = '/',
+        path: Optional[str] = "/",
         user: Optional[Union[User, str]] = None,
-        user_kwargs: Any = {}
+        user_kwargs: Any = {},
     ) -> HttpRequest:
-        if user == 'anonymous':
+        if user == "anonymous":
             user = self.UserFactory.anonymous()
         else:
             user = self.UserFactory(**user_kwargs)
@@ -58,9 +61,7 @@ class TestCase(HttpCodeTestCase):
         return request
 
     def get_view_response(
-        self,
-        view: View,
-        request: HttpRequest = None
+        self, view: View, request: HttpRequest = None
     ) -> HttpResponse:
         if request is None:
             request = self.build_request()

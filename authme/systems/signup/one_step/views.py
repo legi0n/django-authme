@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, get_user_model, login
-from authme.conf.settings import app_settings
+
 from authme._types import FormType, UserType
+from authme.conf.settings import app_settings
 from authme.views import SignupView as BaseSignupView
 
 __all__ = [
-    'SignupView',
+    "SignupView",
 ]
 
 
@@ -17,7 +18,7 @@ class SignupView(BaseSignupView):
         user = authenticate(
             **{
                 UserModel.USERNAME_FIELD: user.get_username(),
-                'password': form.cleaned_data['password1'],
+                "password": form.cleaned_data["password1"],
             }
         )
 

@@ -1,1 +1,1 @@
-from .one_step import views, urls
+from .one_step import urls, views

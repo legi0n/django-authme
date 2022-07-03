@@ -1,4 +1,5 @@
 from django.test.utils import override_settings
+
 from authme.conf.settings import app_settings
 from tests.cases import TestCase
 
@@ -7,7 +8,7 @@ class TestAuthmeSettings(TestCase):
     def test_default_value(self):
         self.assertEqual(app_settings.SIGNUP_ALLOWED, True)
 
-    @override_settings(AUTHME={'SIGNUP_ALLOWED': False})
+    @override_settings(AUTHME={"SIGNUP_ALLOWED": False})
     def test_custom_value(self):
         self.assertEqual(app_settings.SIGNUP_ALLOWED, False)
 

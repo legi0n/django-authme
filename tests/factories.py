@@ -1,10 +1,10 @@
 import factory
 import faker
-from django.contrib.auth.models import AnonymousUser, User
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import AnonymousUser, User
 
 __all__ = [
-    'UserFactory',
+    "UserFactory",
 ]
 
 

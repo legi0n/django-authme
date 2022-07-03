@@ -1,8 +1,8 @@
 from .access import (
-    LoginRequiredMixin,
     AnonymousRequiredMixin,
+    LoginRequiredMixin,
     StaffUserRequiredMixin,
     SuperUserRequiredMixin,
     UserPassesTestMixin,
 )
-from .forms import RedirectURLMixin
+from .forms import EmailMixin, RedirectURLMixin

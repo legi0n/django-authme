@@ -24,6 +24,24 @@ __all__ = [
 UserModel = get_user_model()
 
 
+class BaseTemplateView(RedirectURLMixin, TemplateView):
+    template_name: str = "authme/base.html"
+    next_page: Optional[str] = None
+
+    def process(self) -> None:
+        """
+        Override to process the data before redirecting.
+        """
+        raise NotImplementedError
+
+    @method_decorator(never_cache)
+    def dispatch(
+        self, request: HttpRequestType, *args: Any, **kwargs: Any
+    ) -> HttpResponseType:
+        self.process()
+        return super().dispatch(request, *args, **kwargs)
+
+
 class BaseView(RedirectURLMixin, FormView):
     form_class: FormType = None
     success_url: Optional[str] = None
@@ -105,13 +123,13 @@ class LoginView(BaseView):
     next_page: str = app_settings.LOGIN_REDIRECT_URL
 
 
-class LogoutView(LoginRequiredMixin, RedirectURLMixin, TemplateView):
+class LogoutView(LoginRequiredMixin, BaseTemplateView):
     """
     Base logout view.
     """
 
     template_name: str = "authme/base_logout.html"
-    next_page: str = app_settings.LOGOUT_REDIRECT_URL
+    next_page: Optional[str] = app_settings.LOGOUT_REDIRECT_URL
 
     def post(
         self, request: HttpRequestType, *args: Any, **kwargs: Any
@@ -121,12 +139,6 @@ class LogoutView(LoginRequiredMixin, RedirectURLMixin, TemplateView):
         if success_url != request.get_full_path():
             return HttpResponseRedirect(success_url)
         return super().get(request, *args, **kwargs)
-
-    def process(self) -> None:
-        """
-        Override to process the data before redirecting.
-        """
-        raise NotImplementedError
 
     @method_decorator(never_cache)
     @method_decorator(csrf_protect)

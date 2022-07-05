@@ -7,7 +7,7 @@ from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import resolve_url
 
-from authme._types import HttpRequestType, HttpResponseType
+from authme._types import HttpRequestType, HttpResponseType, UserType
 from authme.conf.settings import app_settings
 
 __all__ = [
@@ -59,18 +59,18 @@ class AccessMixin:
         return self.redirect_field_name
 
     def handle_no_permission(self, message: Optional[str] = None) -> HttpResponseType:
-        if self.raise_exception or self.request.user.is_authenticated:
+        if self.raise_exception or self.request.user.is_authenticated:  # type: ignore
             message = message or self.get_permission_denied_message()
             raise PermissionDenied(message)
 
-        path = self.request.build_absolute_uri()
+        path = self.request.build_absolute_uri()  # type: ignore
         resolved_login_url = resolve_url(self.get_login_url())
         login_scheme, login_netloc = urlparse(resolved_login_url)[:2]
         current_scheme, current_netloc = urlparse(path)[:2]
         if (not login_scheme or login_scheme == current_scheme) and (
             not login_netloc or login_netloc == current_netloc
         ):
-            path = self.request.get_full_path()
+            path = self.request.get_full_path()  # type: ignore
         return redirect_to_login(
             path,
             resolved_login_url,
@@ -88,7 +88,7 @@ class LoginRequiredMixin(AccessMixin):
     ) -> HttpResponseType:
         if not request.user.is_authenticated:
             return self.handle_no_permission()
-        return super().dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)  # type: ignore
 
 
 class AnonymousRequiredMixin(AccessMixin):
@@ -106,7 +106,7 @@ class AnonymousRequiredMixin(AccessMixin):
 
     def handle_no_permission(self, message: Optional[str] = None) -> HttpResponseType:
         url = self.get_authenticated_redirect_url()
-        if url == self.request.get_full_path():
+        if url == self.request.get_full_path():  # type: ignore
             class_name = self.__class__.__name__
             raise ImproperlyConfigured(
                 f"Circular redirect discovered. Please edit the "
@@ -121,7 +121,7 @@ class AnonymousRequiredMixin(AccessMixin):
     ) -> HttpResponseType:
         if request.user.is_authenticated:
             return self.handle_no_permission()
-        return super().dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)  # type: ignore
 
 
 class StaffUserRequiredMixin(AccessMixin):
@@ -134,7 +134,7 @@ class StaffUserRequiredMixin(AccessMixin):
     ) -> HttpResponseType:
         if not (request.user.is_staff or request.user.is_superuser):
             return self.handle_no_permission()
-        return super().dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)  # type: ignore
 
 
 class SuperUserRequiredMixin(AccessMixin):
@@ -147,7 +147,7 @@ class SuperUserRequiredMixin(AccessMixin):
     ) -> HttpResponseType:
         if not request.user.is_superuser:
             return self.handle_no_permission()
-        return super().dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)  # type: ignore
 
 
 class UserPassesTestMixin(AccessMixin):
@@ -155,7 +155,7 @@ class UserPassesTestMixin(AccessMixin):
     User must pass a test before being allowed access to the view.
     """
 
-    def test_func(self, user) -> Any:
+    def test_func(self, user: UserType) -> Any:
         class_name = self.__class__.__name__
         raise NotImplementedError(
             f"{class_name} is missing implementation of the "
@@ -171,4 +171,4 @@ class UserPassesTestMixin(AccessMixin):
         user_test_result = self.get_test_func()(request.user)
         if not user_test_result:
             return self.handle_no_permission()
-        return super().dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)  # type: ignore

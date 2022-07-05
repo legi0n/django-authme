@@ -27,18 +27,18 @@ class RedirectURLMixin:
         """
         Return the user-originating redirect URL if it's safe.
         """
-        redirect_to = self.request.POST.get(
-            self.redirect_field_name, self.request.GET.get(self.redirect_field_name)
+        redirect_to = self.request.POST.get(  # type: ignore
+            self.redirect_field_name, self.request.GET.get(self.redirect_field_name)  # type: ignore
         )
         url_is_safe = url_has_allowed_host_and_scheme(
             url=redirect_to,
             allowed_hosts=self.get_success_url_allowed_hosts(),
-            require_https=self.request.is_secure(),
+            require_https=self.request.is_secure(),  # type: ignore
         )
         return redirect_to if url_is_safe else ""
 
     def get_success_url_allowed_hosts(self) -> set:
-        return {self.request.get_host(), *self.success_url_allowed_hosts}
+        return {self.request.get_host(), *self.success_url_allowed_hosts}  # type: ignore
 
     def get_default_redirect_url(self) -> str:
         """
@@ -50,8 +50,8 @@ class RedirectURLMixin:
 
 
 class EmailMixin:
-    email_subject_template: str = None
-    email_body_template: str = None
+    email_subject_template: Optional[str] = None
+    email_body_template: Optional[str] = None
 
     def get_email_context(self, **kwargs: Any) -> dict:
         """

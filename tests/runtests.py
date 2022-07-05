@@ -41,6 +41,7 @@ SETTINGS = {
             "ENGINE": "django.db.backends.sqlite3",
         }
     },
+    "EMAIL_BACKEND": "django.core.mail.backends.console.EmailBackend",
 }
 
 
@@ -57,7 +58,7 @@ def run_tests(verbosity: int, interactive: bool):
 
     TestRunner = get_runner(settings)
     test_runner = TestRunner(verbosity=verbosity, interactive=interactive)
-    failures = test_runner.run_tests(['.'])
+    failures = test_runner.run_tests(["."])
     sys.exit(bool(failures))
 
 

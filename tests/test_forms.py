@@ -1,10 +1,7 @@
 import faker
 from django.contrib.auth import get_user_model
 
-from authme.forms import (
-    RegistrationForm,
-    AuthenticationForm,
-)
+from authme.forms import AuthenticationForm, RegistrationForm
 from tests.cases import TestCase
 
 f = faker.Faker()

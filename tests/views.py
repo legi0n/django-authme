@@ -1,5 +1,6 @@
 from django.http.response import HttpResponse
 from django.views.generic.base import View
+
 from authme._types import HttpRequestType, HttpResponseType
 
 __all__ = [

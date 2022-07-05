@@ -66,9 +66,9 @@ class BaseView(RedirectURLMixin, FormView):
     def dispatch(
         self, request: HttpRequestType, *args: Any, **kwargs: Any
     ) -> HttpResponseType:
-        if self.redirect_authenticated_user and self.request.user.is_authenticated:
+        if self.redirect_authenticated_user and request.user.is_authenticated:
             redirect_to = self.get_success_url()
-            if redirect_to == self.request.path:
+            if redirect_to == request.path:
                 raise ValueError(
                     "Redirection loop for authenticated user detected. "
                     "Check that your redirect_authenticated_user "

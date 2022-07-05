@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.conf import settings
 
 __all__ = [
@@ -31,7 +33,7 @@ class AppSettings:
 
     default_settings: dict = DEFAULTS
 
-    def __getattr__(self, attr: str):
+    def __getattr__(self, attr: str) -> Any:
         if attr not in self.default_settings:
             raise AttributeError(f"Invalid setting: {attr}")
         try:
